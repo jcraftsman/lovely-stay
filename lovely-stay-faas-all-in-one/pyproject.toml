@@ -8,6 +8,7 @@ packages = [{include = "lovely_stay_faas_all_in_one", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+functions-framework = "^3.5.0"
 
 
 [tool.poetry.group.dev.dependencies]
