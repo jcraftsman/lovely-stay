@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "lovely-stay-faas-all-in-one"
+version = "0.1.0"
+description = ""
+authors = ["wassel alazhar <wassel.alazhar@gmail.com>"]
+readme = "README.md"
+packages = [{include = "lovely_stay_faas_all_in_one", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
