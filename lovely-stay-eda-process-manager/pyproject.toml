@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "lovely-stay-eda-process-manager"
+version = "0.1.0"
+description = ""
+authors = ["jcraftsman <wassel.alazhar@gmail.com>"]
+readme = "README.md"
+packages = [{include = "lovely_stay_eda_process_manager", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
