@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "lovely-stay-paas-transaction-script"
+version = "0.1.0"
+description = ""
+authors = ["jcraftsman <wassel.alazhar@gmail.com>"]
+readme = "README.md"
+packages = [{include = "lovely_stay_paas_transaction_script", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.109.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
