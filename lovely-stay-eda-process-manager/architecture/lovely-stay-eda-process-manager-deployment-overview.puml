@@ -1,0 +1,60 @@
+✨@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Container.puml
+
+!define GOVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/govicons
+!include GOVICONS/line_chart.puml
+!include GOVICONS/microscope.puml
+!include GOVICONS/desktop.puml
+!include GOVICONS/metro_front.puml
+
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/credit_card.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/mail_bulk.puml
+
+
+!define GCPPuml https://raw.githubusercontent.com/Crashedmind/PlantUML-icons-GCP/master/dist
+!include GCPPuml/GCPCommon.puml
+!include GCPPuml/AI_and_Machine_Learning/all.puml
+!include GCPPuml/API_Management/all.puml
+!include GCPPuml/Compute/all.puml
+!include GCPPuml/Databases/all.puml
+!include GCPPuml/Data_Analytics/all.puml
+!include GCPPuml/Storage/all.puml
+
+
+Person(user, "Guest", "", $sprite="users")
+System_Boundary(application, "Bookings Application") {
+  ContainerDb(bookings_db, "Bookings DB", "firestore db", "Stores bookings transactions and related objects", $sprite="Cloud_Firestore")
+  Container(bookings_api, "/bookings api", "cloud run", "Receives incoming booking request", $sprite="Cloud_Run")
+  Container(confirm_booking, "/bookings/confirms api", "cloud function", "Confirms booking request", $sprite="Cloud_Functions")
+
+  Boundary(orchestrator,  "Booking Process", "Orchestrator", $sprite="Cloud_Workflows") {
+    circle "start"
+    rectangle "check_pricing"
+    rectangle "verify_payment"
+    rectangle "call_confirms_booking"
+    rectangle "send_confirmation_email"
+
+}
+}
+
+Boundary(datasources, "External services") {
+System_Ext(payments_processor, "Payment Service", $sprite="credit_card")
+System_Ext(emailing, "Mailing Service", $sprite="mail_bulk")
+}
+
+Rel_R(user, bookings_api, "requests booking")
+Rel(bookings_api, bookings_db, "saves")
+Rel(confirm_booking, bookings_db, "saves / read")
+Rel_D(bookings_db, "start","triggers workflow")
+Rel_D("verify_payment", payments_processor, "requests payment method validation")
+Rel_U("call_confirms_booking", confirm_booking, "executes booking confirmation")
+Rel_D("send_confirmation_email", emailing, "triggers emailing")
+Rel_R("start", "check_pricing", "then")
+Rel_R("check_pricing", "verify_payment", "then")
+Rel_R("verify_payment", "call_confirms_booking", "then")
+Rel_R( "call_confirms_booking", "send_confirmation_email", "then")
+
+LAYOUT_WITH_LEGEND()
+@enduml
