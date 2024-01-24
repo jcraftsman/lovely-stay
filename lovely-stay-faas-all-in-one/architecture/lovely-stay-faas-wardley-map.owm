@@ -1,0 +1,41 @@
+title Booking Value Chain 
+
+anchor Guest [0.97, 0.34]
+component Booking Website [0.84, 0.34]
+component Verify Payment [0.55, 0.85]
+component Booking Web API [0.71, 0.25] label [-60, 5]
+component Check pricing [0.54, 0.22]
+component Book rooms (Availability) [0.60, 0.34] label [5, -10]
+component Booking DataBase [0.45, 0.34] label [-30, 10]
+component Auto-scaling (elasticity) [0.10, 0.85] label [40, -10]
+component Deployment Automation [0.40, 0.50] label [-50, 10]
+component DBMS [0.35, 0.85]
+component Hosting [0.32, 0.85]
+component Runtime [0.22, 0.85]
+component High Availability [0.19, 0.78]
+component Transactional emailing (confirmation email) [0.75, 0.85]  label [-33, 5]
+component Compute Resources [0.04, 0.90]
+Book rooms (Availability) -> Booking DataBase
+Book rooms (Availability) -> Booking DataBase
+Guest -> Booking Website
+Guest -> Transactional emailing (confirmation email)
+Check pricing -> Booking DataBase
+Booking Web API -> Book rooms (Availability)
+Booking Web API -> Check pricing
+Booking Web API -> Verify Payment
+Booking Web API -> Transactional emailing (confirmation email)
+Booking Web API -> Deployment Automation
+Deployment Automation -> Hosting
+Deployment Automation -> High Availability
+Deployment Automation -> Auto-scaling (elasticity)
+Booking DataBase -> Deployment Automation
+Deployment Automation -> DBMS
+Deployment Automation -> Runtime
+Deployment Automation -> Compute Resources
+Deployment Automation -> Storage Resources
+Deployment Automation -> Hosting
+Deployment Automation -> High Availability
+Deployment Automation -> Auto-scaling (elasticity)
+Booking Website -> Booking Web API
+evolution 🧪 Genesis -> ⚒️  Custom-Built -> 🛒 Product (+rental) -> ⛽ Commodity (+utility)
+style wardley
