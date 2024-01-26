@@ -1,0 +1,8 @@
+name: automation
+runtime:
+  name: python
+description: Deploy lovely stay app container on google cloud run
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: container-gcp-python

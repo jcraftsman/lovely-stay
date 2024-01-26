@@ -1,0 +1,31 @@
+# 🐳📦▶️ containerize the app and run it
+container: container-build container-start
+
+# 🐳📦 containerize the app
+container-build:
+     docker build -t lovely-stay-paas-transaction-script .
+     docker run -p 8000:80 lovely-stay-paas-transaction-script
+
+# 🐳📦 start the app container
+container-start:
+     docker start -p 8000:80 lovely-stay-paas-transaction-script
+
+# 🐳🧸 dockerfile linting
+container-lint:
+     docker run --rm -i hadolint/hadolint < Dockerfile
+
+# 🚀 deploy the app
+deploy:
+    poetry run pulumi up --cwd src/automation --yes
+
+# 🚮 destroy the app
+destroy:
+    poetry run pulumi destroy --cwd src/automation -v 3 --yes -f
+
+# ▶️ start the app
+start:
+     poetry run uvicorn src.lovely_stay_paas_transaction_script.booking_api:app --reload
+
+# 🧪 run tests
+test:
+     poetry run pytest

@@ -1,0 +1,8 @@
+config:
+  automation:appPath: ../..
+  automation:concurrency: "50"
+  automation:containerPort: "80"
+  automation:cpu: "1"
+  automation:memory: 1Gi
+  gcp:project: wassel-spikes
+  gcp:region: europe-west9

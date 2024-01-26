@@ -4,15 +4,23 @@ version = "0.1.0"
 description = ""
 authors = ["jcraftsman <wassel.alazhar@gmail.com>"]
 readme = "README.md"
-packages = [{include = "lovely_stay_paas_transaction_script", from = "src"}]
+packages = [{ include = "lovely_stay_paas_transaction_script", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.109.0"
 
+[tool.poetry.group.app.dependencies]
+fastapi = "^0.109.0"
+uvicorn = "^0.27.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.4"
+
+[tool.poetry.group.automation.dependencies]
+pulumi = "^3.103.1"
+pulumi-gcp = "^7.7.0"
+pulumi-docker = "^4.5.1"
+pulumi-random = "^4.15.1"
 
 [build-system]
 requires = ["poetry-core"]
