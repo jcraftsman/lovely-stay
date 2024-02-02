@@ -1,0 +1,66 @@
+✨@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Container.puml
+
+!define GOVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/govicons
+!include GOVICONS/line_chart.puml
+
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/credit_card.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/mail_bulk.puml
+!include FONTAWESOME/house_user.puml
+
+
+!define GCPPuml https://raw.githubusercontent.com/Crashedmind/PlantUML-icons-GCP/master/dist
+!include GCPPuml/GCPCommon.puml
+!include GCPPuml/Compute/all.puml
+!include GCPPuml/Databases/all.puml
+!include GCPPuml/Data_Analytics/all.puml
+!include GCPPuml/Storage/all.puml
+
+
+Person(user, "Guest", "", $sprite="users")
+System_Boundary(application, "Bookings Application") #yellow {
+  ContainerDb(bookings_db, "Bookings DB", "firestore db", "Stores bookings transactions and related objects", $sprite="Cloud_Firestore")
+  Container(bookings_api, "/bookings api", "cloud run", "Receives incoming booking request", $sprite="Cloud_Run")
+
+  Boundary(orchestrator,  "Booking Confirmation Process", "Orchestrator", $sprite="Cloud_Workflows") {
+    circle "start"
+    rectangle "check_pricing"
+    rectangle "verify_payment"
+    rectangle "call_confirms_booking"
+    rectangle "send_confirmation_email"
+  }
+  ContainerQueue(event_broker, "Booking Events", "pub/sub topic", "Delivers published event messages to subscribers", $sprite="Cloud_PubSub")
+}
+
+System(pricing, "Offers and Pricing",  $sprite="line_chart")
+System(housekeeping, "Housekeeping", $sprite="house_user")
+
+
+
+Boundary(external_services, "External services") {
+  System_Ext(payments_processor, "Payment Service", $sprite="credit_card")
+  System_Ext(emailing, "Mailing Service", $sprite="mail_bulk")
+}
+
+Rel_L(user, bookings_api, "requests booking")
+Rel_L(bookings_api, bookings_db, "saves")
+Rel_L(bookings_db, event_broker, 'publishes booking events')
+Rel(event_broker, "start", "triggers workflow")
+Rel("start", "check_pricing", "then")
+Rel("check_pricing", "verify_payment", "then")
+Rel("verify_payment", "call_confirms_booking", "then")
+Rel("call_confirms_booking", "send_confirmation_email", "then")
+Rel_L("check_pricing", pricing, "use pricing")
+Rel("call_confirms_booking", bookings_api, "executes booking confirmation /bookings/{id}/confirm")
+Rel_D("verify_payment", payments_processor, "requests payment method validation")
+Rel_D("send_confirmation_email", emailing, "triggers emailing")
+
+Rel_U(housekeeping, event_broker, 'subscribes to booking events')
+Rel_U(pricing, event_broker, 'subscribes')
+
+LAYOUT_LEFT_RIGHT()
+
+LAYOUT_WITH_LEGEND()
+@enduml
