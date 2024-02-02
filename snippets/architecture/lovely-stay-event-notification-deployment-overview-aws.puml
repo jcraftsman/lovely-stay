@@ -1,0 +1,42 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Container.puml
+
+
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/credit_card.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/mail_bulk.puml
+
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v17.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/Containers/Fargate.puml
+!include AWSPuml/Database/DynamoDB.puml
+!include AWSPuml/Database/DynamoDBStream.puml
+!include AWSPuml/Database/DynamoDBTable.puml
+!include AWSPuml/ApplicationIntegration/EventBridge.puml
+
+
+Person(user, "Guest", "", $sprite="users")
+System_Boundary(application, "Bookings Application") {
+  Container(bookings_api, "/bookings API", "fargate", "Confirms incoming booking request", $sprite="Fargate")
+  ContainerDb(bookings_db, "Bookings DB", "dynamo db", "Stores bookings transactions\n and related objects", $sprite="DynamoDB"){
+    'DynamoDBStream("bookings_stream","booking events" ,"stream")
+    'DynamoDBTable("bookings_table","bookings", "table")
+  }
+}
+
+Container(event_router,"Event Router", "event bridge", $sprite="EventBridge")
+
+Boundary(external_services, "External services") {
+  System_Ext(payments_processor, "Payment Service", $sprite="credit_card")
+  System_Ext(emailing, "Mailing Service", $sprite="mail_bulk")
+}
+
+Rel(user, bookings_api, "requests booking")
+Rel(bookings_api, bookings_db, "saves / read")
+Rel_R(bookings_api, payments_processor, "requests payment method validation")
+Rel_D(bookings_db, event_router, "publish events", $sprite="DynamoDBStream")
+Rel_R(event_router, emailing, "triggers emailing", $sprite="DynamoDBStream")
+
+LAYOUT_WITH_LEGEND()
+@enduml

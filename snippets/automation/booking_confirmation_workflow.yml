@@ -1,0 +1,31 @@
+main:
+  params: [args]
+  steps:
+    - checkPricing:
+        call: http.post
+        args:
+          url: ${args.pricingApiUrl}/pricing/check
+          body:
+            offers: ${args.bookingDetails.selectedOffers}
+        result: pricingResult
+    - verifyPayment:
+        call: http.post
+        args:
+          url: https://api.stripe.com/verify
+          body:
+            token: ${args.paymentToken}
+        result: paymentResult
+    - confirmBooking:
+        call: http.post
+        args:
+          url: ${args.bookingApiUrl}/bookings/${args.bookingDetails.bookingId}/confirm
+          body:
+            bookingDetails: ${args.bookingDetails}
+        result: bookingConfirmation
+    - sendEmail:
+        call: http.post
+        args:
+          url: https://api.zendesk.com/send
+          body:
+            message: ${args.emailMessage}
+        result: emailResult
