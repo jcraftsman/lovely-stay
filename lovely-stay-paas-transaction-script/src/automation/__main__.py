@@ -1,7 +1,7 @@
 import pulumi
 import pulumi_docker as docker
 import pulumi_random as random
-from pulumi_gcp import artifactregistry
+from pulumi_gcp import artifactregistry, firestore
 from pulumi_gcp import cloudrun
 
 # Import the program's configuration settings.
@@ -64,6 +64,8 @@ image = docker.Image(
     ),
 )
 
+database = firestore.Database("bookings-database", location_id=location, project=project, type="FIRESTORE_NATIVE")
+
 # Create a Cloud Run service definition.
 service = cloudrun.Service(
     "service",
@@ -89,6 +91,10 @@ service = cloudrun.Service(
                             cloudrun.ServiceTemplateSpecContainerEnvArgs(
                                 name="FLASK_RUN_PORT",
                                 value=container_port,
+                            ),
+                            cloudrun.ServiceTemplateSpecContainerEnvArgs(
+                                name="DATABASE_ADDRESS",
+                                value=database.urn,
                             ),
                         ],
                     ),
