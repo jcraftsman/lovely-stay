@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from lovely_stay_paas_transaction_script.booking_transaction import book_with_commitment_to_pay
+from lovely_stay_paas_transaction_script.booking_transaction import book_with_commitment_to_pay, BookingRequest
 
 app = FastAPI()
 
@@ -12,7 +12,7 @@ def http_post_bookings(http_request):
     return http_response(booking_confirmed)
 
 
-def parse(http_request):
+def parse(http_request) -> BookingRequest:
     pass
 
 

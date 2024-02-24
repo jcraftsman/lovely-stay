@@ -29,3 +29,7 @@ start:
 # 🧪 run tests
 test:
      poetry run pytest
+
+# 🧪 run features tests
+test-features:
+     poetry run behave tests/features
