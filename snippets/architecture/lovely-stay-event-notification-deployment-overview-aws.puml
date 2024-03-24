@@ -34,7 +34,7 @@ Boundary(external_services, "External services") {
 
 Rel(user, bookings_api, "requests booking")
 Rel(bookings_api, bookings_db, "saves / read")
-Rel_R(bookings_api, payments_processor, "requests payment method validation")
+Rel(bookings_api, payments_processor, "requests payment method validation")
 Rel_D(bookings_db, event_router, "publish events", $sprite="DynamoDBStream")
 Rel_R(event_router, emailing, "triggers emailing", $sprite="DynamoDBStream")
 

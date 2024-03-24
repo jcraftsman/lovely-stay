@@ -1,0 +1,42 @@
+@startuml
+!include https://raw.githubusercontent.com/adrianvlupu/C4-PlantUML/latest/C4_Container.puml
+
+!define GOVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/govicons
+!include GOVICONS/line_chart.puml
+!include GOVICONS/microscope.puml
+!include GOVICONS/desktop.puml
+!include GOVICONS/metro_front.puml
+
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/credit_card.puml
+!include FONTAWESOME/users.puml
+!include FONTAWESOME/mail_bulk.puml
+
+
+!define GCPPuml https://raw.githubusercontent.com/Crashedmind/PlantUML-icons-GCP/master/dist
+!include GCPPuml/GCPCommon.puml
+!include GCPPuml/Compute/all.puml
+!include GCPPuml/Databases/all.puml
+!include GCPPuml/Data_Analytics/all.puml
+!include GCPPuml/Storage/all.puml
+
+
+Person(user, "Guest", "", $sprite="users")
+System_Boundary(application, "Bookings Application") {
+  Container(bookings_api, "/bookings API", "cloud run", "Confirms incoming booking request")
+  ContainerDb(bookings_db, "Bookings DB", "firestore db", "Stores bookings transactions and related objects")
+}
+
+
+Boundary(external_services, "External services") {
+System_Ext(payments_processor, "Payment Service", $sprite="credit_card")
+System_Ext(emailing, "Mailing Service", $sprite="mail_bulk")
+}
+
+Rel(user, bookings_api, "requests booking")
+Rel(bookings_api, bookings_db, "saves / read")
+Rel(bookings_api, payments_processor, "requests payment method validation")
+Rel_(bookings_db, emailing, "triggers emailing","-[#green;bold]>>")
+
+LAYOUT_WITH_LEGEND()
+@enduml
